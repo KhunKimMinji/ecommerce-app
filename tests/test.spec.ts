@@ -162,6 +162,9 @@ test.describe("Verify Products Page", () => {
     await productsPage.clickContinueShoppingButton();
     await productsPage.productHover(1);
     await productsPage.clickAddToCartButton(1, productStore);
+    await productsPage.clickContinueShoppingButton();
+    await productsPage.productHover(0);
+    await productsPage.clickAddToCartButton(0, productStore);
     await productsPage.clickViewCartButton();
     console.log("DONE Add product in Cart -> Store :", productStore);
   });
