@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { ProductStore } from "../src/store/product-store";
 
 export class ProductsPage {
   page: Page;
@@ -21,10 +22,12 @@ export class ProductsPage {
     this.allProductHeader = page.locator("h2.title.text-center");
     this.productList = page.locator(".single-products");
     this.viewProductButton = page.locator("i.fa.fa-plus-square");
-    this.productName = page.locator('div.productinfo.text-center p')
+    this.productName = page.locator("div.productinfo.text-center p");
     this.searchTextbox = page.locator("#search_product");
     this.searchButton = page.locator("#submit_search");
-    this.addToCart = page.locator('//div[contains(@class, "overlay-content")]//a[contains(text(), "Add to cart")]')
+    this.addToCart = page.locator(
+      '//div[contains(@class, "overlay-content")]//a[contains(text(), "Add to cart")]'
+    );
     this.continueShoppingButton = page.getByText("Continue Shopping");
     this.viewCartButton = page.getByText("View Cart");
     this.productPrice = page.locator("div.productinfo.text-center h2");
@@ -67,22 +70,24 @@ export class ProductsPage {
   }
 
   // add first product to cart
-  async clickAddToCartButton(index: number) {
- 
+  async clickAddToCartButton(index: number, productStore: ProductStore) {
     await this.addToCart.nth(index).click();
-    const prodName = await this.productName.nth(index).innerText();
-    const priceText = await this.productPrice.nth(index).innerText();
-    const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
-    this.selectedName = prodName;
-    this.selectedPrice = price;
-    console.log(
-      "First Product Name:",
-      prodName,
-      "Product Price Text:",
-      priceText,
-      "Product Price:",
-      price
-    );
+    const productName = await this.productName.nth(index).innerText();
+    productStore.set(productName, 1);
+
+    // TEST
+    // const priceText = await this.productPrice.nth(index).innerText();
+    // const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
+    // this.selectedName = productName;
+    // this.selectedPrice = price;
+    // console.log(
+    //   "First Product Name:",
+    //   productName,
+    //   "Product Price Text:",
+    //   priceText,
+    //   "Product Price:",
+    //   price
+    // );
   }
 
   async clickContinueShoppingButton() {

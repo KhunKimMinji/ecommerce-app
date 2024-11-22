@@ -6,6 +6,7 @@ import { LogoutPage } from "./logout.page";
 import { ProductsPage } from "./products.page";
 import { ProductDetailsPage } from "./product-details.page";
 import { ViewCartPage } from "./viewCart.page";
+import { ProductStore } from "../src/store/product-store";
 
 export const test = base.extend<{
   mainPage: MainPage;
@@ -15,6 +16,7 @@ export const test = base.extend<{
   productsPage: ProductsPage;
   productDetailsPage: ProductDetailsPage;
   viewCartPage: ViewCartPage;
+  productStore: ProductStore;
 }>({
   mainPage: async ({ page }, use) => {
     await use(new MainPage(page));
@@ -36,5 +38,8 @@ export const test = base.extend<{
   },
   viewCartPage: async ({ page }, use) => {
     await use(new ViewCartPage(page));
+  },
+  productStore: async ({ page }, use) => {
+    await use(new ProductStore());
   },
 });

@@ -5,6 +5,7 @@ import { MainPage } from "../page-objects/main.page";
 import { RegisterPage } from "../page-objects/register.page";
 import { LoginPage } from "../page-objects/login.page";
 import { ViewCartPage } from "../page-objects/viewCart.page";
+import { ProductStore } from "../src/store/product-store";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -152,16 +153,20 @@ test.describe("Verify Products Page", () => {
     registerPage,
     productsPage,
     viewCartPage,
+    productStore,
   }) => {
     await register(mainPage, registerPage);
     await mainPage.clickProductsMenu();
     await productsPage.productHover(0);
-    await productsPage.clickAddToCartButton(0);
+    await productsPage.clickAddToCartButton(0, productStore);
     await productsPage.clickContinueShoppingButton();
     await productsPage.productHover(1);
-    await productsPage.clickAddToCartButton(1);
+    await productsPage.clickAddToCartButton(1, productStore);
     await productsPage.clickViewCartButton();
+    console.log("DONE Add product in Cart -> Store :", productStore);
   });
 
-  test("Add more products", async ({}) => {});
+  test("Add more products", async ({ productStore }) => {
+    console.log("Add more products -> check product store :", productStore);
+  });
 });
