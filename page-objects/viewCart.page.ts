@@ -10,11 +10,11 @@ export class ViewCartPage {
     this.productRows = page.locator("table.table.table-condensed tbody  tr");
   }
 
-  async verifyProductRows() {
-    const cartTableRows = this.productRows;
-    await expect(cartTableRows).toHaveCount(2);
-    for (let i = 0; i < 2; i++) {
-      const row = cartTableRows.nth(i);
-    }
-  }
+  //   async verifyProductRows() {
+  //     const countRows = await this.productRows.count();
+  //     for (let i = 0; i < countRows; i++) {
+  //       await expect(this.productRows.nth(i)).toBeVisible();
+  //     }
+  //     console.log('Product Rows:', countRows)
+  //   }
 }

@@ -4,6 +4,7 @@ import { loginData, registerData } from "../test-data/test-data";
 import { MainPage } from "../page-objects/main.page";
 import { RegisterPage } from "../page-objects/register.page";
 import { LoginPage } from "../page-objects/login.page";
+import { ViewCartPage } from "../page-objects/viewCart.page";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -150,6 +151,7 @@ test.describe("Verify Products Page", () => {
     mainPage,
     registerPage,
     productsPage,
+    viewCartPage,
   }) => {
     await register(mainPage, registerPage);
     await mainPage.clickProductsMenu();

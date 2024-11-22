@@ -14,8 +14,8 @@ export class ProductsPage {
   continueShoppingButton: Locator;
   viewCartButton: Locator;
   productPrice: Locator;
-  selectedProductPrice: string;
   selectedPrice: number;
+  selectedName: string;
 
   constructor(page: Page) {
     this.page = page;
@@ -72,6 +72,19 @@ export class ProductsPage {
   // add first product to cart
   async clickAddToCartButton() {
     await this.addToCart.nth(0).click();
+    const prodName = await this.productName.nth(0).innerText();
+    const priceText = await this.productPrice.nth(0).innerText();
+    const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
+    this.selectedName = prodName;
+    this.selectedPrice = price;
+    console.log(
+      "First Product Name:",
+      prodName,
+      "Product Price Text:",
+      priceText,
+      "Product Price:",
+      price
+    );
   }
 
   async clickContinueShoppingButton() {
@@ -85,16 +98,23 @@ export class ProductsPage {
   // add second product to cart
   async clickSecondProductAddToCartButton() {
     await this.addToCart.nth(2).click();
+    const prodName = await this.productName.nth(2).innerText();
+    const priceText = await this.productPrice.nth(2).innerText();
+    const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
+    this.selectedName = prodName;
+    this.selectedPrice = price;
+
+    console.log(
+      "Second Product Name:",
+      prodName,
+      "Product Price Text:",
+      priceText,
+      "Product Price:",
+      price
+    );
   }
 
   async clickViewCartButton() {
     await this.viewCartButton.click();
-  }
-
-  async getProductDetails() {
-    const priceText = await this.productName.nth(0).innerText();
-    const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
-    this.selectedProductPrice = priceText;
-    this.selectedPrice = price;
   }
 }
