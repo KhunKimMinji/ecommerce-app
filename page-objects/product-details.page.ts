@@ -35,4 +35,5 @@ export class ProductDetailsPage {
     await expect(this.productBand).toBeVisible();
   }
 
+
 }

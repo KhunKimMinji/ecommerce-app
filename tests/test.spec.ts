@@ -155,11 +155,11 @@ test.describe("Verify Products Page", () => {
   }) => {
     await register(mainPage, registerPage);
     await mainPage.clickProductsMenu();
-    await productsPage.productHover();
-    await productsPage.clickAddToCartButton();
+    await productsPage.productHover(0);
+    await productsPage.clickAddToCartButton(0);
     await productsPage.clickContinueShoppingButton();
-    await productsPage.secondProductHover();
-    await productsPage.clickSecondProductAddToCartButton();
+    await productsPage.productHover(1);
+    await productsPage.clickAddToCartButton(1);
     await productsPage.clickViewCartButton();
   });
 
