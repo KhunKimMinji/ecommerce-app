@@ -4,6 +4,7 @@ import { loginData, registerData } from '../test-data/test-data';
 import { MainPage } from '../page-objects/main.page';
 import { RegisterPage } from '../page-objects/register.page';
 import { LoginPage } from '../page-objects/login.page';
+import { ShoppingCartStore } from '../src/store/cart';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
@@ -145,7 +146,9 @@ test.describe('Verify Products Page', () => {
   });
 });
 
-test.describe('Verify Products Page', () => {
+test.describe.serial('Verify Products Page', () => {
+  const shoppingCartStore = new ShoppingCartStore(); // TODO:
+
   test('Add Products in Cart', async ({
     mainPage,
     registerPage,
