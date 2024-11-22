@@ -148,6 +148,7 @@ test.describe('Verify Products Page', () => {
 
 test.describe.serial('Verify Products Page', () => {
   const shoppingCartStore = new ShoppingCartStore(); // TODO:
+  console.log('check init store:', shoppingCartStore);
 
   test('Add Products in Cart', async ({
     mainPage,
@@ -157,12 +158,55 @@ test.describe.serial('Verify Products Page', () => {
     await register(mainPage, registerPage);
     await mainPage.clickProductsMenu();
     await productsPage.productHover();
+
+    // add first product
+    const firstProductName = await productsPage.productName.nth(0).innerText();
     await productsPage.clickAddToCartButton();
+    shoppingCartStore.set({ name: firstProductName, price: 500, quantity: 1 });
+    console.log('check store after add first product:', shoppingCartStore);
+
     await productsPage.clickContinueShoppingButton();
     await productsPage.secondProductHover();
+
+    // add second product
+    const secondProductName = await productsPage.productName.nth(1).innerText();
     await productsPage.clickSecondProductAddToCartButton();
+    shoppingCartStore.set({
+      name: secondProductName,
+      price: 1000,
+      quantity: 1,
+    });
+    console.log('check store after add second product:', shoppingCartStore);
+
     await productsPage.clickViewCartButton();
+
+    // Update existed product new value
+    shoppingCartStore.set({
+      name: firstProductName,
+      price: 500,
+      quantity: 100,
+    });
+    console.log('check store after set existed product:', shoppingCartStore);
+
+    // Get value
+    const productValue = shoppingCartStore.get(firstProductName);
+    console.log('check get value by product name:', productValue);
+
+    // Increase product in cart
+    shoppingCartStore.increase(firstProductName);
+    console.log('check increase by product name I:', shoppingCartStore);
+
+    // Increase product in cart
+    shoppingCartStore.increase(firstProductName);
+    console.log('check increase by product name II:', shoppingCartStore);
+
+    // Remove product from cart
+    shoppingCartStore.remove(firstProductName);
+    console.log('check store after remove:', shoppingCartStore);
   });
 
-  test('Add more products', async ({}) => {});
+  test('Add more products', async ({}) => {
+    console.log('Step - Add more products');
+    console.log('check store:', shoppingCartStore);
+  });
 });
