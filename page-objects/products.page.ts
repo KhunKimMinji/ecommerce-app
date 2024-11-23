@@ -73,7 +73,7 @@ export class ProductsPage {
   async clickAddToCartButton(index: number, productStore: ProductStore) {
     await this.addToCart.nth(index).click();
     const productName = await this.productName.nth(index).innerText();
-    productStore.set(productName, 1);
+    productStore.set(productName, 1, 500); // TODO: pass correct product price
 
     // TEST
     // const priceText = await this.productPrice.nth(index).innerText();

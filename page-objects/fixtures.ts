@@ -39,7 +39,7 @@ export const test = base.extend<{
   viewCartPage: async ({ page }, use) => {
     await use(new ViewCartPage(page));
   },
-  productStore: async ({ page }, use) => {
+  productStore: async ({}, use) => {
     await use(new ProductStore());
   },
 });
