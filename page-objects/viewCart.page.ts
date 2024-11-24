@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { ProductsPage } from "./products.page";
 import { ProductStore } from "../src/store/product-store";
+import _ from "lodash";
 
 export class ViewCartPage {
   page: Page;
@@ -19,31 +19,38 @@ export class ViewCartPage {
 
   async verifyProductList(productStore: ProductStore) {
     const descriptions = await this.descriptionColumn.allInnerTexts();
-    const textPrices = await this.priceColumn.allInnerTexts();
-    const prices = textPrices.map((textPrice) => {
-      return parseFloat(textPrice.replace("Rs. ", "").trim() || "0");
-    });
+    const kebabCaseDescription = descriptions.map((value) => _.kebabCase(value))
+    console.log('Description:', descriptions, 'KebubDes:', kebabCaseDescription)
+
     const textQuantity = await this.quantityColumn.allInnerTexts();
     const quantities = textQuantity.map((textPrice) => {
       return parseFloat(textPrice || "0");
     });
-    const textTotal = await this.totalColumn.allInnerTexts();
-    const totals = textTotal.map((textPrice) => {
+
+    const textPrices = await this.priceColumn.allInnerTexts();
+    const prices = textPrices.map((textPrice) => {
       return parseFloat(textPrice.replace("Rs. ", "").trim() || "0");
     });
 
-    for (const index in descriptions) {
-      const productName = descriptions[index];
-      const price = prices[index];
-      const quantity = quantities[index];
-      const total = totals[index];
-      console.log('Product details:', productName, price, quantity, total)
-    }
+    const textTotalProduct = await this.totalColumn.allInnerTexts();
+    const totalProducts = textTotalProduct.map((textPrice) => {
+      return parseFloat(textPrice.replace("Rs. ", "").trim() || "0");
+    });
 
-    // for (const productName of descriptions) {
-    //   console.log(productName, productStore);
-    //   const product = productStore.get(productName.trim());
-    //   expect(product).toBe(`${descriptions}":{ quantity:"${quantity},"price:"${prices},"total:"${total} }`)
-    // }
+    for (const index in kebabCaseDescription) {
+      const productName = kebabCaseDescription[index];
+      const quantity = quantities[index];
+      const price = prices[index];
+      const total = totalProducts[index];
+      const productStoreValue = productStore.get(productName);
+
+      console.log("Product details:", productName, quantity, price, total);
+      console.log("Product in store:", productStoreValue);
+
+      expect(productName).toBe(productStoreValue?.name)
+      expect(quantity).toBe(productStoreValue?.quantity)
+      expect(price).toBe(productStoreValue?.price)
+      expect(total).toBe(productStoreValue?.total)
+    }
   }
 }

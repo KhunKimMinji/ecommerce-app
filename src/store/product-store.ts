@@ -1,4 +1,7 @@
+import _ from "lodash";
+
 type ProductDetail = {
+  name: string;
   quantity: number;
   price: number;
   total: number;
@@ -11,7 +14,7 @@ export class ProductStore {
   store: ProductStoreType = {};
 
   private convertKey(productName: string): string {
-    return productName.trim().replace(" ", "_");
+    return _.kebabCase(productName);
   }
 
   private getUpdateProduct(
@@ -36,6 +39,7 @@ export class ProductStore {
     // จะ initial value ของ product name นั้นเท่ากับ count ที่ส่งมา
     if (checkExistedKey === false && quantity >= 0) {
       this.store[this.convertKey(productName)] = {
+        name: this.convertKey(productName),
         quantity,
         price,
         total: price * quantity,
@@ -61,7 +65,6 @@ export class ProductStore {
       newQuantity,
       product.price
     );
-    console.log("increase:", updatedProduct);
     this.store[this.convertKey(productName)] = updatedProduct;
   }
 
