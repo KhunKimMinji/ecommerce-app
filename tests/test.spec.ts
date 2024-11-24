@@ -166,10 +166,8 @@ test.describe("Verify Products Page", () => {
     await productsPage.productHover(0);
     await productsPage.clickAddToCartButton(0, productStore);
     await productsPage.clickViewCartButton();
-    await viewCartPage.verifyDescriptionList(productStore);
-    await viewCartPage.verifyPriceList();
-    await viewCartPage.verifyQuantityList();
-    await viewCartPage.verifyTotalList();
+    await viewCartPage.verifyProductList(productStore);
+
     console.log("DONE Add product in Cart -> Store :", productStore);
   });
 

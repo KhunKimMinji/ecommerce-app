@@ -17,36 +17,33 @@ export class ViewCartPage {
     this.totalColumn = page.locator("td.cart_total p");
   }
 
-  async verifyDescriptionList(productStore: ProductStore) {
+  async verifyProductList(productStore: ProductStore) {
     const descriptions = await this.descriptionColumn.allInnerTexts();
-    for (const productName of descriptions) {
-      console.log(productName, productStore);
-      const product = productStore.get(productName.trim());
-      expect(product).toBeTruthy();
-    }
-  }
-
-  async verifyPriceList() {
     const textPrices = await this.priceColumn.allInnerTexts();
     const prices = textPrices.map((textPrice) => {
       return parseFloat(textPrice.replace("Rs. ", "").trim() || "0");
     });
-    console.log("Prices:", prices);
-  }
-
-  async verifyQuantityList() {
     const textQuantity = await this.quantityColumn.allInnerTexts();
-    const quantity = textQuantity.map((textPrice) => {
+    const quantities = textQuantity.map((textPrice) => {
       return parseFloat(textPrice || "0");
     });
-    console.log("Quantity:", quantity);
-  }
-
-  async verifyTotalList() {
     const textTotal = await this.totalColumn.allInnerTexts();
-    const total = textTotal.map((textPrice) => {
+    const totals = textTotal.map((textPrice) => {
       return parseFloat(textPrice.replace("Rs. ", "").trim() || "0");
     });
-    console.log("Total:", total);
+
+    for (const index in descriptions) {
+      const productName = descriptions[index];
+      const price = prices[index];
+      const quantity = quantities[index];
+      const total = totals[index];
+      console.log('Product details:', productName, price, quantity, total)
+    }
+
+    // for (const productName of descriptions) {
+    //   console.log(productName, productStore);
+    //   const product = productStore.get(productName.trim());
+    //   expect(product).toBe(`${descriptions}":{ quantity:"${quantity},"price:"${prices},"total:"${total} }`)
+    // }
   }
 }

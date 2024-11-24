@@ -14,8 +14,6 @@ export class ProductsPage {
   continueShoppingButton: Locator;
   viewCartButton: Locator;
   productPrice: Locator;
-  selectedPrice: number;
-  selectedName: string;
 
   constructor(page: Page) {
     this.page = page;
@@ -73,21 +71,10 @@ export class ProductsPage {
   async clickAddToCartButton(index: number, productStore: ProductStore) {
     await this.addToCart.nth(index).click();
     const productName = await this.productName.nth(index).innerText();
-    productStore.set(productName, 1, 500); // TODO: pass correct product price
-
-    // TEST
-    // const priceText = await this.productPrice.nth(index).innerText();
-    // const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
-    // this.selectedName = productName;
-    // this.selectedPrice = price;
-    // console.log(
-    //   "First Product Name:",
-    //   productName,
-    //   "Product Price Text:",
-    //   priceText,
-    //   "Product Price:",
-    //   price
-    // );
+    this.selectedProductName = productName;
+    const priceText = await this.productPrice.nth(index).innerText();
+    const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
+    productStore.set(productName, 1, price); 
   }
 
   async clickContinueShoppingButton() {
