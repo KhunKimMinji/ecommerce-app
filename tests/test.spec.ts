@@ -225,7 +225,7 @@ test.describe("Order Product E2E Flow", () => {
     );
   });
 
-  test("Add more products", async ({ productStore }) => {
+  test("Order product before logging in", async ({ productStore }) => {
     // console.log("Add more products -> check product store :", productStore);
   });
 });
