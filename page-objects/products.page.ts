@@ -74,7 +74,7 @@ export class ProductsPage {
     this.selectedProductName = productName;
     const priceText = await this.productPrice.nth(index).innerText();
     const price = parseFloat(priceText?.replace("Rs. ", "").trim() || "0");
-    productStore.set(productName, 1, price); 
+    productStore.set(productName, price, 1);
   }
 
   async clickContinueShoppingButton() {

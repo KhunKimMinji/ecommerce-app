@@ -4,8 +4,6 @@ import { loginData, registerData } from "../test-data/test-data";
 import { MainPage } from "../page-objects/main.page";
 import { RegisterPage } from "../page-objects/register.page";
 import { LoginPage } from "../page-objects/login.page";
-import { ViewCartPage } from "../page-objects/viewCart.page";
-import { ProductStore } from "../src/store/product-store";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -17,8 +15,8 @@ const randomPassword = faker.internet.password();
 const randomFirstName = faker.person.firstName();
 const randomLastName = faker.person.lastName();
 const randomCompany = faker.company.name();
-const randomAddress = faker.location.streetAddress();
-const randomAddress2 = faker.location.streetAddress();
+const randomFristAddress = faker.location.streetAddress();
+const randomSecondAddress = faker.location.streetAddress();
 const randomState = faker.location.state();
 const randomCity = faker.location.city();
 const randomZipcode = faker.location.zipCode();
@@ -43,8 +41,8 @@ async function register(mainPage: MainPage, registerPage: RegisterPage) {
     randomFirstName,
     randomLastName,
     randomCompany,
-    randomAddress,
-    randomAddress2,
+    randomFristAddress,
+    randomSecondAddress,
     registerData.country,
     randomState,
     randomCity,
@@ -147,13 +145,14 @@ test.describe("Verify Products Page", () => {
   });
 });
 
-test.describe("Verify Products Page", () => {
-  test("Add Products in Cart", async ({
+test.describe("Order Product E2E Flow", () => {
+  test("Order product when the user is already logged in", async ({
     mainPage,
     registerPage,
     productsPage,
     productStore,
     viewCartPage,
+    checkoutPage,
   }) => {
     await register(mainPage, registerPage);
     await mainPage.clickProductsMenu();
@@ -167,11 +166,42 @@ test.describe("Verify Products Page", () => {
     await productsPage.clickAddToCartButton(0, productStore);
     await productsPage.clickViewCartButton();
     await viewCartPage.verifyProductList(productStore);
-
-    console.log("DONE Add product in Cart -> Store :", productStore);
+    await viewCartPage.clickCheckoutButton();
+    await checkoutPage.verfiyDeliveryAddress(
+      registerPage,
+      randomFirstName,
+      randomLastName,
+      randomCompany,
+      randomFristAddress,
+      randomSecondAddress,
+      randomCity,
+      randomState,
+      randomZipcode,
+      registerData.country,
+      randomMobileNumber
+    );
+    await checkoutPage.verfiyBillingAddress(
+      registerPage,
+      randomFirstName,
+      randomLastName,
+      randomCompany,
+      randomFristAddress,
+      randomSecondAddress,
+      randomCity,
+      randomState,
+      randomZipcode,
+      registerData.country,
+      randomMobileNumber
+    );
+    // await checkoutPage.verifyProductsCheckout(); // TODO
+    console.log(
+      "DONE Add product in Cart -> Store :",
+      productStore,
+      productStore.sum()
+    );
   });
 
   test("Add more products", async ({ productStore }) => {
-    console.log("Add more products -> check product store :", productStore);
+    // console.log("Add more products -> check product store :", productStore);
   });
 });

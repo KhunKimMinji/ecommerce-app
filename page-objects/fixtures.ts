@@ -4,9 +4,10 @@ import { MainPage } from "./main.page";
 import { LoginPage } from "./login.page";
 import { LogoutPage } from "./logout.page";
 import { ProductsPage } from "./products.page";
-import { ProductDetailsPage } from "./product-details.page";
+import { ProductDetailsPage } from "./productDetails.page";
 import { ViewCartPage } from "./viewCart.page";
 import { ProductStore } from "../src/store/product-store";
+import { CheckoutPage } from '../page-objects/checkout.page'
 
 export const test = base.extend<{
   mainPage: MainPage;
@@ -17,6 +18,7 @@ export const test = base.extend<{
   productDetailsPage: ProductDetailsPage;
   viewCartPage: ViewCartPage;
   productStore: ProductStore;
+  checkoutPage: CheckoutPage
 }>({
   mainPage: async ({ page }, use) => {
     await use(new MainPage(page));
@@ -41,5 +43,8 @@ export const test = base.extend<{
   },
   productStore: async ({}, use) => {
     await use(new ProductStore());
+  },
+  checkoutPage: async ({ page }, use) => {
+    await use(new CheckoutPage(page));
   },
 });

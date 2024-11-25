@@ -19,8 +19,8 @@ export class RegisterPage {
   firstNameTextbox: Locator;
   lastNameTextbox: Locator;
   companyTextbox: Locator;
-  addressTextbox: Locator;
-  address2Textbox: Locator;
+  firstaddressTextbox: Locator;
+  secondaddressTextbox: Locator;
   countryDropdown: Locator;
   stateTextbox: Locator;
   cityTextbox: Locator;
@@ -29,10 +29,11 @@ export class RegisterPage {
   createAccountButton: Locator;
   accountCreatedMsg: Locator;
   continueButton: Locator;
-  
   deleteButton: Locator;
   accountDeleteMsg: Locator;
   emailAlreadyExistMsg: Locator;
+  selectedTitle: string;
+  selectedCountry: string;
 
   constructor(page: Page) {
     this.page = page;
@@ -53,8 +54,8 @@ export class RegisterPage {
     this.firstNameTextbox = page.locator("#first_name");
     this.lastNameTextbox = page.locator("#last_name");
     this.companyTextbox = page.locator("#company");
-    this.addressTextbox = page.locator("#address1");
-    this.address2Textbox = page.locator("#address2");
+    this.firstaddressTextbox = page.locator("#address1");
+    this.secondaddressTextbox = page.locator("#address2");
     this.countryDropdown = page.locator('select[data-qa="country"]');
     this.stateTextbox = page.locator("#state");
     this.cityTextbox = page.locator("#city");
@@ -65,7 +66,7 @@ export class RegisterPage {
     });
     this.accountCreatedMsg = page.getByText("Account Created!");
     this.continueButton = page.locator("a.btn.btn-primary");
-   
+
     this.deleteButton = page.getByText(" Delete Account");
     this.accountDeleteMsg = page.getByText("Account Deleted!");
     this.emailAlreadyExistMsg = page.getByText("Email Address already exist!");
@@ -105,6 +106,8 @@ export class RegisterPage {
     yearOption: string
   ) {
     await this.titleRadio.click();
+    const titleName = await this.titleRadio.getAttribute("value");
+    this.selectedTitle = titleName || "";
     await this.passwordTextbox.fill(password);
     await this.dayDropdown.selectOption(dayOption);
     await this.mouthDropdown.selectOption(monthOption);
@@ -127,9 +130,11 @@ export class RegisterPage {
     await this.firstNameTextbox.fill(firstName);
     await this.lastNameTextbox.fill(lastName);
     await this.companyTextbox.fill(company);
-    await this.addressTextbox.fill(address);
-    await this.address2Textbox.fill(address2);
+    await this.firstaddressTextbox.fill(address);
+    await this.secondaddressTextbox.fill(address2);
     await this.countryDropdown.selectOption(country);
+    const countryName = await this.countryDropdown.getAttribute("value");
+    this.selectedCountry = countryName || ''
     await this.stateTextbox.fill(state);
     await this.cityTextbox.fill(city);
     await this.zipcodetTextbox.fill(zipcode);
