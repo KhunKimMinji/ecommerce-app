@@ -8,6 +8,8 @@ import { ProductDetailsPage } from "./productDetails.page";
 import { ViewCartPage } from "./viewCart.page";
 import { ProductStore } from "../src/store/product-store";
 import { CheckoutPage } from '../page-objects/checkout.page'
+import { Paymentpage } from "./payment.page";
+import { OrderPlacedPage } from "./orderPlaced.page"
 
 export const test = base.extend<{
   mainPage: MainPage;
@@ -19,6 +21,8 @@ export const test = base.extend<{
   viewCartPage: ViewCartPage;
   productStore: ProductStore;
   checkoutPage: CheckoutPage
+  paymentpage: Paymentpage
+  orderPlacedPage: OrderPlacedPage
 }>({
   mainPage: async ({ page }, use) => {
     await use(new MainPage(page));
@@ -46,5 +50,11 @@ export const test = base.extend<{
   },
   checkoutPage: async ({ page }, use) => {
     await use(new CheckoutPage(page));
+  },
+  paymentpage: async ({ page }, use) => {
+    await use(new Paymentpage(page));
+  },
+  orderPlacedPage: async ({ page }, use) => {
+    await use(new OrderPlacedPage(page));
   },
 });

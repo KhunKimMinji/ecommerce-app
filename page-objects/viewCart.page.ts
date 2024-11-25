@@ -8,7 +8,7 @@ export class ViewCartPage {
   priceColumn: Locator;
   quantityColumn: Locator;
   totalColumn: Locator;
-  checkoutButton: Locator
+  checkoutButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -16,13 +16,20 @@ export class ViewCartPage {
     this.priceColumn = page.locator("td.cart_price p");
     this.quantityColumn = page.locator("td.cart_quantity button");
     this.totalColumn = page.locator("td.cart_total p");
-    this.checkoutButton = page.getByText('Proceed To Checkout')
+    this.checkoutButton = page.getByText("Proceed To Checkout");
   }
 
   async verifyProductList(productStore: ProductStore) {
     const descriptions = await this.descriptionColumn.allInnerTexts();
-    const kebabCaseDescription = descriptions.map((value) => _.kebabCase(value))
-    console.log('Description:', descriptions, 'KebubDes:', kebabCaseDescription)
+    const kebabCaseDescription = descriptions.map((value) =>
+      _.kebabCase(value)
+    );
+    console.log(
+      "Description:",
+      descriptions,
+      "KebubDes:",
+      kebabCaseDescription
+    );
 
     const textPrices = await this.priceColumn.allInnerTexts();
     const prices = textPrices.map((textPrice) => {
@@ -39,7 +46,8 @@ export class ViewCartPage {
       return parseFloat(textPrice.replace("Rs. ", "").trim() || "0");
     });
 
-    for (const index in kebabCaseDescription) {
+    const productList = kebabCaseDescription.length;
+    for (let index = 0; index < productList; index++) {
       const productName = kebabCaseDescription[index];
       const price = prices[index];
       const quantity = quantities[index];
@@ -49,15 +57,14 @@ export class ViewCartPage {
       console.log("Product details:", productName, price, quantity, total);
       console.log("Product in store:", productStoreValue);
 
-      expect(productName).toBe(productStoreValue?.name)
-      expect(price).toBe(productStoreValue?.price)
-      expect(quantity).toBe(productStoreValue?.quantity)
-      expect(total).toBe(productStoreValue?.total)
+      expect(productName).toBe(productStoreValue?.name);
+      expect(price).toBe(productStoreValue?.price);
+      expect(quantity).toBe(productStoreValue?.quantity);
+      expect(total).toBe(productStoreValue?.total);
     }
   }
-  
-  async clickCheckoutButton(){
-    await this.checkoutButton.click()
 
+  async clickCheckoutButton() {
+    await this.checkoutButton.click();
   }
 }

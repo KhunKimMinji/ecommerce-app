@@ -4,7 +4,6 @@ import { ProductStore } from "../src/store/product-store";
 export class ProductsPage {
   page: Page;
   allProductHeader: Locator;
-  productList: Locator;
   viewProductButton: Locator;
   productName: Locator;
   selectedProductName: string;
@@ -18,7 +17,6 @@ export class ProductsPage {
   constructor(page: Page) {
     this.page = page;
     this.allProductHeader = page.locator("h2.title.text-center");
-    this.productList = page.locator(".single-products");
     this.viewProductButton = page.locator("i.fa.fa-plus-square");
     this.productName = page.locator("div.productinfo.text-center p");
     this.searchTextbox = page.locator("#search_product");
@@ -36,9 +34,9 @@ export class ProductsPage {
   }
 
   async verifyProductsVisible() {
-    const count = await this.productList.count();
-    for (let i = 0; i < count; i++) {
-      await expect(this.productList.nth(i)).toBeVisible();
+    const productList = await this.productName.count();
+    for (let index = 0; index < productList; index++) {
+      await expect(this.productName.nth(index)).toBeVisible();
     }
   }
 

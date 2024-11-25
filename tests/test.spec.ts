@@ -4,6 +4,7 @@ import { loginData, registerData } from "../test-data/test-data";
 import { MainPage } from "../page-objects/main.page";
 import { RegisterPage } from "../page-objects/register.page";
 import { LoginPage } from "../page-objects/login.page";
+import _ from "lodash";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -146,6 +147,12 @@ test.describe("Verify Products Page", () => {
 });
 
 test.describe("Order Product E2E Flow", () => {
+  const randomCardName = faker.finance.accountName();
+  const randomCardNumber = faker.finance.creditCardNumber();
+  const radomCVC = faker.finance.creditCardCVV();
+  const randomCardExpiration = _.random(1, 12).toString().padStart(2, "0");
+  const randomYearCard = new Date().getFullYear() + 1;
+
   test("Order product when the user is already logged in", async ({
     mainPage,
     registerPage,
@@ -153,6 +160,8 @@ test.describe("Order Product E2E Flow", () => {
     productStore,
     viewCartPage,
     checkoutPage,
+    paymentpage,
+    orderPlacedPage,
   }) => {
     await register(mainPage, registerPage);
     await mainPage.clickProductsMenu();
@@ -193,8 +202,20 @@ test.describe("Order Product E2E Flow", () => {
       registerData.country,
       randomMobileNumber
     );
-    // await checkoutPage.verifyProductsCheckout(); // TODO
-    console.log(
+    await checkoutPage.verifyProductsCheckout(productStore);
+    await checkoutPage.verifyTotalAmount(productStore);
+    await checkoutPage.clickPlaceOrderButton();
+    await paymentpage.fillPaymentData(
+      randomCardName,
+      randomCardNumber,
+      radomCVC,
+      randomCardExpiration,
+      randomYearCard
+    );
+    await paymentpage.clickPayAndConfirmButton();
+    await orderPlacedPage.verifyOrderPlacedMessage()
+
+    await console.log(
       "DONE Add product in Cart -> Store :",
       productStore,
       productStore.sum()

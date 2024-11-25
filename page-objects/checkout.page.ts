@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { RegisterPage } from "./register.page";
-import _, { replace } from "lodash";
+import _ from "lodash";
+import { ProductStore } from "../src/store/product-store";
 
 export class CheckoutPage {
   page: Page;
@@ -23,6 +24,7 @@ export class CheckoutPage {
   quantityColumn: Locator;
   totalColumn: Locator;
   totalAmount: Locator;
+  placeOrderButton: Locator
 
   constructor(page: Page) {
     this.page = page;
@@ -70,7 +72,8 @@ export class CheckoutPage {
     this.priceColumn = page.locator("td.cart_price p");
     this.quantityColumn = page.locator("td.cart_quantity button");
     this.totalColumn = page.locator("td.cart_total p");
-    this.totalAmount = page.locator("td p.cart_total_price").nth(3);
+    this.totalAmount = page.locator("td p.cart_total_price").nth(2);
+    this.placeOrderButton = page.getByText('Place Order')
   }
 
   async verfiyDeliveryAddress(
@@ -167,7 +170,7 @@ export class CheckoutPage {
     expect(phoneBilling).toBe(billingMobileNumber);
   }
 
-  async verifyProductsCheckout() {
+  async verifyProductsCheckout(productStore: ProductStore) {
     const descriptions = await this.descriptionColumn.allInnerTexts();
     const kebabCaseDescription = descriptions.map((value) =>
       _.kebabCase(value)
@@ -188,9 +191,32 @@ export class CheckoutPage {
       return parseFloat(textTotal.replace("Rs. ", "").trim() || "0");
     });
 
+    const productList = kebabCaseDescription.length;
+    for (let index = 0; index < productList; index++) {
+      const description = kebabCaseDescription[index];
+      const price = prices[index];
+      const quantity = quantities[index];
+      const total = totals[index];
+      const productValue = productStore.get(description);
+
+      expect(description).toBe(productValue?.name);
+      expect(price).toBe(productValue?.price);
+      expect(quantity).toBe(productValue?.quantity);
+      expect(total).toBe(productValue?.total);
+    }
+  }
+
+  async verifyTotalAmount(productStore: ProductStore) {
+    await expect(this.totalAmount).toBeVisible();
     const textTotalAmount = await this.totalAmount.innerText();
     const amountTotal = parseFloat(
       textTotalAmount.replace("Rs. ", "").trim() || "0"
     );
+    expect(amountTotal).toBe(productStore.sum());
+    console.log("A:", amountTotal, "B:", productStore.sum());
+  }
+
+  async clickPlaceOrderButton(){
+    await this.placeOrderButton.click()
   }
 }
