@@ -61,6 +61,10 @@ export class ProductsPage {
     expect(productDisplay).toEqual(getDataInTextbox);
   }
 
+  async scrollDoewn(index: number) {
+    await this.viewProductButton.nth(index).scrollIntoViewIfNeeded();
+  }
+
   async productHover(index: number) {
     await this.productName.nth(index).hover();
   }

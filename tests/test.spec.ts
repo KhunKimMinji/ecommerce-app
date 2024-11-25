@@ -165,6 +165,7 @@ test.describe("Order Product E2E Flow", () => {
   }) => {
     await register(mainPage, registerPage);
     await mainPage.clickProductsMenu();
+    await productsPage.scrollDoewn(0);
     await productsPage.productHover(0);
     await productsPage.clickAddToCartButton(0, productStore);
     await productsPage.clickContinueShoppingButton();
@@ -213,7 +214,9 @@ test.describe("Order Product E2E Flow", () => {
       randomYearCard
     );
     await paymentpage.clickPayAndConfirmButton();
-    await orderPlacedPage.verifyOrderPlacedMessage()
+    await orderPlacedPage.verifyOrderPlacedMessage();
+    await orderPlacedPage.clickContinueButton();
+    await mainPage.verifyLoginUsername(randomName);
 
     await console.log(
       "DONE Add product in Cart -> Store :",
