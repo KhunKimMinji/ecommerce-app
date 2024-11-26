@@ -2,13 +2,14 @@ import { Locator, Page, expect } from '@playwright/test'
 import { ProductStore } from '../src/store/product-store'
 import _ from 'lodash'
 
-export class ViewCartPage {
+export class CartPage {
   page: Page
   descriptionColumn: Locator
   priceColumn: Locator
   quantityColumn: Locator
   totalColumn: Locator
   checkoutButton: Locator
+  registerAndLoginButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -17,6 +18,7 @@ export class ViewCartPage {
     this.quantityColumn = page.locator('td.cart_quantity button')
     this.totalColumn = page.locator('td.cart_total p')
     this.checkoutButton = page.getByText('Proceed To Checkout')
+    this.registerAndLoginButton = page.locator('//p[@class="text-center"]//u[text()="Register / Login"]')
   }
 
   async verifyProductList(productStore: ProductStore) {
@@ -59,5 +61,9 @@ export class ViewCartPage {
 
   async clickCheckoutButton() {
     await this.checkoutButton.click()
+  }
+
+  async clickRegisterAndLoginButton(){
+    await this.registerAndLoginButton.click()
   }
 }

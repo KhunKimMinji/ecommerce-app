@@ -1,6 +1,4 @@
-import { test } from '../page-objects/fixtures'
-import { loginData, registerData } from '../test-data/testData'
-import _ from 'lodash'
+import { test } from '../src/fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
@@ -10,9 +8,18 @@ test('Register User with existing email', async ({
   registerPage,
   logoutPage,
   registerFunction,
-  randomData
+  randomData,
+  mainPage,
+  registerData
 }) => {
-  await registerFunction()
+  await mainPage.verifyMainPageVisible()
+  await mainPage.clickSignupAndLoginButton()
+  await registerFunction.validRegister({
+    mainPage,
+    registerPage,
+    randomData,
+    registerData
+  })
   await logoutPage.clickLogoutButton()
   await registerPage.verifyNewSignupMessage()
   await registerPage.fillRegisterData(
@@ -29,9 +36,18 @@ test.describe('Login Flow', () => {
     logoutPage,
     loginPage,
     registerFunction,
-    randomData
+    randomData,
+    registerPage,
+    registerData
   }) => {
-    await registerFunction()
+    await mainPage.verifyMainPageVisible()
+    await mainPage.clickSignupAndLoginButton()
+    await registerFunction.validRegister({
+      mainPage,
+      registerPage,
+      randomData,
+      registerData
+    })
     await logoutPage.clickLogoutButton()
     await loginPage.verifyloginYourAccountMessage()
     await loginPage.filllLoginData(
@@ -42,7 +58,11 @@ test.describe('Login Flow', () => {
     await mainPage.verifyLoginUsername(randomData.randomName)
   })
 
-  test('Login User with incorrect email', async ({ loginPage, mainPage }) => {
+  test('Login User with incorrect email', async ({
+    loginPage,
+    mainPage,
+    loginData
+  }) => {
     await mainPage.clickSignupAndLoginButton()
     await loginPage.verifyloginYourAccountMessage()
     await loginPage.filllLoginData(
@@ -55,7 +75,8 @@ test.describe('Login Flow', () => {
 
   test('Login User with incorrect password', async ({
     loginPage,
-    mainPage
+    mainPage,
+    loginData
   }) => {
     await mainPage.clickSignupAndLoginButton()
     await loginPage.verifyloginYourAccountMessage()
@@ -69,8 +90,9 @@ test.describe('Login Flow', () => {
 })
 
 test.describe('Verify Products Page', () => {
-  test.beforeEach(async ({ loginFunction }) => {
-    await loginFunction()
+  test.beforeEach(async ({ mainPage, loginFunction, loginPage, loginData }) => {
+    await mainPage.clickSignupAndLoginButton()
+    await loginFunction.validLogin({ loginPage, loginData })
   })
   test('Verify All Products and product detail page', async ({
     mainPage,
@@ -100,14 +122,22 @@ test.describe('Order Product E2E Flow', () => {
     registerPage,
     productsPage,
     productStore,
-    viewCartPage,
+    cartPage,
     checkoutPage,
     paymentpage,
     orderPlacedPage,
     registerFunction,
-    randomData
+    randomData,
+    registerData
   }) => {
-    await registerFunction()
+    await mainPage.verifyMainPageVisible()
+    await mainPage.clickSignupAndLoginButton()
+    await registerFunction.validRegister({
+      mainPage,
+      registerPage,
+      randomData,
+      registerData
+    })
     await mainPage.clickProductsMenu()
     await productsPage.scrollDoewn(0)
     await productsPage.productHover(0)
@@ -119,8 +149,8 @@ test.describe('Order Product E2E Flow', () => {
     await productsPage.productHover(0)
     await productsPage.clickAddToCartButton(0, productStore)
     await productsPage.clickViewCartButton()
-    await viewCartPage.verifyProductList(productStore)
-    await viewCartPage.clickCheckoutButton()
+    await cartPage.verifyProductList(productStore)
+    await cartPage.clickCheckoutButton()
     await checkoutPage.verfiyDeliveryAddress(
       registerPage,
       randomData.randomFirstName,
@@ -168,5 +198,26 @@ test.describe('Order Product E2E Flow', () => {
     )
   })
 
-  test('Order product before logging in', async ({ productStore }) => {})
+  test('Order product before logging in', async ({
+    mainPage,
+    productsPage,
+    productStore,
+    cartPage,
+    loginFunction,
+    loginPage,
+    loginData
+  }) => {
+    await mainPage.clickProductsMenu()
+    await productsPage.scrollDoewn(0)
+    await productsPage.productHover(0)
+    await productsPage.clickAddToCartButton(0, productStore)
+    await productsPage.clickContinueShoppingButton()
+    await productsPage.productHover(1)
+    await productsPage.clickAddToCartButton(1, productStore)
+    await productsPage.clickViewCartButton()
+    await cartPage.verifyProductList(productStore)
+    await cartPage.clickCheckoutButton()
+    await cartPage.clickRegisterAndLoginButton()
+    await loginFunction.validLogin({ loginPage, loginData })
+  })
 })

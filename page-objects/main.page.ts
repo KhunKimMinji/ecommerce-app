@@ -6,6 +6,7 @@ export class MainPage {
   signupAndLogin: Locator
   loggedInAsUsername: Locator
   productsMenu: Locator
+  cartMenu: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -13,6 +14,7 @@ export class MainPage {
     this.signupAndLogin = page.locator('text=Signup / Login')
     this.loggedInAsUsername = page.getByText(' Logged in as ')
     this.productsMenu = page.locator('i.material-icons.card_travel')
+    this.cartMenu = page.locator('ul.nav.navbar-nav i.fa-shopping-cart')
   }
 
   async verifyMainPageVisible() {
@@ -31,5 +33,9 @@ export class MainPage {
 
   async clickProductsMenu() {
     await this.productsMenu.click()
+  }
+
+  async clickCartMenu() {
+    await this.cartMenu.click()
   }
 }

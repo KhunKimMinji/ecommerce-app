@@ -1,18 +1,18 @@
 import { test as base } from '@playwright/test'
-import { RegisterPage } from './register.page'
-import { MainPage } from './main.page'
-import { LoginPage } from './login.page'
-import { LogoutPage } from './logout.page'
-import { ProductsPage } from './products.page'
-import { ProductDetailsPage } from './productDetails.page'
-import { ViewCartPage } from './viewCart.page'
-import { ProductStore } from '../src/store/product-store'
+import { RegisterPage } from '../page-objects/register.page'
+import { MainPage } from '../page-objects/main.page'
+import { LoginPage } from '../page-objects/login.page'
+import { LogoutPage } from '../page-objects/logout.page'
+import { ProductsPage } from '../page-objects/products.page'
+import { ProductDetailsPage } from '../page-objects/productDetails.page'
+import { CartPage } from '../page-objects/cart.page'
+import { ProductStore } from './store/product-store'
 import { CheckoutPage } from '../page-objects/checkout.page'
-import { Paymentpage } from './payment.page'
-import { OrderPlacedPage } from './orderPlaced.page'
+import { Paymentpage } from '../page-objects/payment.page'
+import { OrderPlacedPage } from '../page-objects/orderPlaced.page'
 import { randomData } from '../test-data/randomData'
-import { registerFunction } from '../src/functions/register'
-import { loginFunction } from '../src/functions/login'
+import { RegisterFunction } from './functions/register'
+import { LoginFunction } from './functions/login'
 import {
   loginData,
   registerData,
@@ -27,7 +27,7 @@ export const test = base.extend<{
   logoutPage: LogoutPage
   productsPage: ProductsPage
   productDetailsPage: ProductDetailsPage
-  viewCartPage: ViewCartPage
+  cartPage: CartPage
   productStore: ProductStore
   checkoutPage: CheckoutPage
   paymentpage: Paymentpage
@@ -35,8 +35,8 @@ export const test = base.extend<{
   randomData: typeof randomData
   registerData: RegisterData
   loginData: LoginData
-  registerFunction: () => Promise<void>
-  loginFunction: () => Promise<void>
+  registerFunction: RegisterFunction
+  loginFunction: LoginFunction
 }>({
   mainPage: async ({ page }, use) => {
     await use(new MainPage(page))
@@ -56,8 +56,8 @@ export const test = base.extend<{
   productDetailsPage: async ({ page }, use) => {
     await use(new ProductDetailsPage(page))
   },
-  viewCartPage: async ({ page }, use) => {
-    await use(new ViewCartPage(page))
+  cartPage: async ({ page }, use) => {
+    await use(new CartPage(page))
   },
   productStore: async ({}, use) => {
     await use(new ProductStore())
@@ -80,20 +80,10 @@ export const test = base.extend<{
   loginData: async ({}, use) => {
     await use(loginData)
   },
-  registerFunction: async ({ mainPage, registerPage, randomData, registerData }, use) => {
-    await use(
-      async () =>
-        await registerFunction({
-          mainPage,
-          registerPage,
-          randomData,
-          registerData,
-        })
-    )
+  registerFunction: async ({}, use ) => {
+    await use(new RegisterFunction())
   },
-  loginFunction: async ({ mainPage, loginPage, loginData }, use) => {
-    await use(
-      async () => await loginFunction({ mainPage, loginPage, loginData })
-    )
+  loginFunction: async ({}, use) => {
+    await use(new LoginFunction())
   }
 })
