@@ -1,60 +1,12 @@
 import { test } from '../page-objects/fixtures'
-import { faker } from '@faker-js/faker'
-import { loginData, registerData } from '../test-data/test-data'
+import { loginData, registerData } from '../test-data/testData'
 import { MainPage } from '../page-objects/main.page'
-import { RegisterPage } from '../page-objects/register.page'
 import { LoginPage } from '../page-objects/login.page'
 import _ from 'lodash'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
-
-const randomName = faker.person.fullName()
-const randomEmail = faker.internet.email()
-const randomPassword = faker.internet.password()
-const randomFirstName = faker.person.firstName()
-const randomLastName = faker.person.lastName()
-const randomCompany = faker.company.name()
-const randomFristAddress = faker.location.streetAddress()
-const randomSecondAddress = faker.location.streetAddress()
-const randomState = faker.location.state()
-const randomCity = faker.location.city()
-const randomZipcode = faker.location.zipCode()
-const randomMobileNumber = faker.phone.number()
-
-async function register(mainPage: MainPage, registerPage: RegisterPage) {
-  await mainPage.verifyMainPageVisible()
-  await mainPage.clickSignupAndLoginButton()
-  await registerPage.verifyNewSignupMessage()
-  await registerPage.fillRegisterData(randomName, randomEmail)
-  await registerPage.clickSignupButton()
-  await registerPage.verifyEnterAccountMessage()
-  await registerPage.verifyNameTextboxValue(randomName)
-  await registerPage.verifyEmailTextboxValue(randomEmail)
-  await registerPage.fillAccountInformation(
-    randomPassword,
-    registerData.days,
-    registerData.months,
-    registerData.years
-  )
-  await registerPage.fillAddressInformation(
-    randomFirstName,
-    randomLastName,
-    randomCompany,
-    randomFristAddress,
-    randomSecondAddress,
-    registerData.country,
-    randomState,
-    randomCity,
-    randomZipcode,
-    randomMobileNumber
-  )
-  await registerPage.clickCreateAccountButton()
-  await registerPage.verifyAccountCreatedMessage()
-  await registerPage.clickContinueButton()
-  await mainPage.verifyLoginUsername(randomName)
-}
 
 async function login(mainPage: MainPage, loginPage: LoginPage) {
   await mainPage.clickSignupAndLoginButton()
@@ -67,14 +19,18 @@ async function login(mainPage: MainPage, loginPage: LoginPage) {
 }
 
 test('Register User with existing email', async ({
-  mainPage,
   registerPage,
-  logoutPage
+  logoutPage,
+  registerFunction,
+  randomData
 }) => {
-  await register(mainPage, registerPage)
+  await registerFunction()
   await logoutPage.clickLogoutButton()
   await registerPage.verifyNewSignupMessage()
-  await registerPage.fillRegisterData(randomName, randomEmail)
+  await registerPage.fillRegisterData(
+    randomData.randomName,
+    randomData.randomEmail
+  )
   await registerPage.clickSignupButton()
   await registerPage.verifyEmailAlreadyExistMessage()
 })
@@ -84,14 +40,18 @@ test.describe('Login Flow', () => {
     mainPage,
     logoutPage,
     loginPage,
-    registerPage
+    registerFunction,
+    randomData
   }) => {
-    await register(mainPage, registerPage)
+    await registerFunction()
     await logoutPage.clickLogoutButton()
     await loginPage.verifyloginYourAccountMessage()
-    await loginPage.filllLoginData(randomEmail, randomPassword)
+    await loginPage.filllLoginData(
+      randomData.randomEmail,
+      randomData.randomPassword
+    )
     await loginPage.clickLoginButton()
-    await mainPage.verifyLoginUsername(randomName)
+    await mainPage.verifyLoginUsername(randomData.randomName)
   })
 
   test('Login User with incorrect email', async ({ loginPage, mainPage }) => {
@@ -147,12 +107,6 @@ test.describe('Verify Products Page', () => {
 })
 
 test.describe('Order Product E2E Flow', () => {
-  const randomCardName = faker.finance.accountName()
-  const randomCardNumber = faker.finance.creditCardNumber()
-  const radomCVC = faker.finance.creditCardCVV()
-  const randomCardExpiration = _.random(1, 12).toString().padStart(2, '0')
-  const randomYearCard = new Date().getFullYear() + 1
-
   test('Order product when the user is already logged in', async ({
     mainPage,
     registerPage,
@@ -161,9 +115,11 @@ test.describe('Order Product E2E Flow', () => {
     viewCartPage,
     checkoutPage,
     paymentpage,
-    orderPlacedPage
+    orderPlacedPage,
+    registerFunction,
+    randomData
   }) => {
-    await register(mainPage, registerPage)
+    await registerFunction()
     await mainPage.clickProductsMenu()
     await productsPage.scrollDoewn(0)
     await productsPage.productHover(0)
@@ -179,44 +135,44 @@ test.describe('Order Product E2E Flow', () => {
     await viewCartPage.clickCheckoutButton()
     await checkoutPage.verfiyDeliveryAddress(
       registerPage,
-      randomFirstName,
-      randomLastName,
-      randomCompany,
-      randomFristAddress,
-      randomSecondAddress,
-      randomCity,
-      randomState,
-      randomZipcode,
+      randomData.randomFirstName,
+      randomData.randomLastName,
+      randomData.randomCompany,
+      randomData.randomFristAddress,
+      randomData.randomSecondAddress,
+      randomData.randomCity,
+      randomData.randomState,
+      randomData.randomZipcode,
       registerData.country,
-      randomMobileNumber
+      randomData.randomMobileNumber
     )
     await checkoutPage.verfiyBillingAddress(
       registerPage,
-      randomFirstName,
-      randomLastName,
-      randomCompany,
-      randomFristAddress,
-      randomSecondAddress,
-      randomCity,
-      randomState,
-      randomZipcode,
+      randomData.randomFirstName,
+      randomData.randomLastName,
+      randomData.randomCompany,
+      randomData.randomFristAddress,
+      randomData.randomSecondAddress,
+      randomData.randomCity,
+      randomData.randomState,
+      randomData.randomZipcode,
       registerData.country,
-      randomMobileNumber
+      randomData.randomMobileNumber
     )
     await checkoutPage.verifyProductsCheckout(productStore)
     await checkoutPage.verifyTotalAmount(productStore)
     await checkoutPage.clickPlaceOrderButton()
     await paymentpage.fillPaymentData(
-      randomCardName,
-      randomCardNumber,
-      radomCVC,
-      randomCardExpiration,
-      randomYearCard
+      randomData.randomCardName,
+      randomData.randomCardNumber,
+      randomData.radomCVC,
+      randomData.randomCardExpiration,
+      randomData.randomYearCard
     )
     await paymentpage.clickPayAndConfirmButton()
     await orderPlacedPage.verifyOrderPlacedMessage()
     await orderPlacedPage.clickContinueButton()
-    await mainPage.verifyLoginUsername(randomName)
+    await mainPage.verifyLoginUsername(randomData.randomName)
 
     await console.log(
       'DONE Add product in Cart -> Store :',
