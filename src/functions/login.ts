@@ -1,17 +1,17 @@
 import { LoginPage } from '../../page-objects/login.page'
-import { LoginData } from '../../test-data/testData.ts'
+import { randomData } from '../../test-data/randomData'
 
 type LoginFunctionProp = {
   loginPage: LoginPage
-  loginData: LoginData
+  randomData: typeof randomData
 }
 
 export class LoginFunction {
-  async validLogin({ loginPage, loginData }: LoginFunctionProp) {
+  async validLogin({ loginPage, randomData }: LoginFunctionProp) {
     await loginPage.verifyloginYourAccountMessage()
     await loginPage.filllLoginData(
-      loginData.correctEmail,
-      loginData.correctPassword
+      randomData.randomEmail,
+      randomData.randomPassword
     )
     await loginPage.clickLoginButton()
   }

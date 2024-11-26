@@ -2,6 +2,8 @@ import { Locator, Page, expect } from '@playwright/test'
 import { RegisterPage } from './register.page'
 import _ from 'lodash'
 import { ProductStore } from '../src/store/product-store'
+import { RegisterData } from '../test-data/testData'
+import { randomData } from '../test-data/randomData'
 
 export class CheckoutPage {
   page: Page
@@ -78,96 +80,80 @@ export class CheckoutPage {
 
   async verfiyDeliveryAddress(
     registerPage: RegisterPage,
-    deliveryFirstName: string,
-    deliveryLastName: string,
-    deliveryCompany: string,
-    deliveryFirstAddress: string,
-    deliverySecondAddress: string,
-    deliveryCity: string,
-    deliveryState: string,
-    deliveryZipcode: string,
-    deliveryCountry: string,
-    diliveryMobileNumber: string
+    registerData: RegisterData,
+    randomRegisterData: typeof randomData
   ) {
     await expect(this.fullnameDeliveryAddress).toBeVisible()
     const fullNameDelivery = await this.fullnameDeliveryAddress.innerText()
     expect(fullNameDelivery).toBe(
-      `${registerPage.selectedTitle}. ${deliveryFirstName} ${deliveryLastName}`
+      `${registerPage.selectedTitle}. ${randomRegisterData.randomFirstName} ${randomRegisterData.randomLastName}`
     )
 
     await expect(this.companyDeliveryAddress).toBeVisible()
     const companyDelivery = await this.companyDeliveryAddress.innerText()
-    expect(companyDelivery).toBe(deliveryCompany)
+    expect(companyDelivery).toBe(randomRegisterData.randomCompany)
 
     await expect(this.firstDeliveryAddress).toBeVisible()
     const firstDelivery = await this.firstDeliveryAddress.innerText()
-    expect(firstDelivery).toBe(deliveryFirstAddress)
+    expect(firstDelivery).toBe(randomRegisterData.randomFristAddress)
 
     await expect(this.secondDeliveryAddress).toBeVisible()
     const secondDelivery = await this.secondDeliveryAddress.innerText()
-    expect(secondDelivery).toBe(deliverySecondAddress)
+    expect(secondDelivery).toBe(randomRegisterData.randomSecondAddress)
 
     await expect(this.cityStateZipcodeDeliveryAddress).toBeVisible()
     const addressDetailsDelivery =
       await this.cityStateZipcodeDeliveryAddress.innerText()
     expect(addressDetailsDelivery).toBe(
-      `${deliveryCity} ${deliveryState} ${deliveryZipcode}`
+      `${randomRegisterData.randomCity} ${randomRegisterData.randomState} ${randomRegisterData.randomZipcode}`
     )
 
     await expect(this.countryDeliveryAddress).toBeVisible()
     const countryDelivery = await this.countryDeliveryAddress.innerText()
-    expect(countryDelivery).toBe(deliveryCountry)
+    expect(countryDelivery).toBe(registerData.country)
 
     await expect(this.mobileDeliveryAddress).toBeVisible()
     const phoneDelivery = await this.mobileDeliveryAddress.innerText()
-    expect(phoneDelivery).toBe(diliveryMobileNumber)
+    expect(phoneDelivery).toBe(randomRegisterData.randomMobileNumber)
   }
 
   async verfiyBillingAddress(
     registerPage: RegisterPage,
-    billingFirstName: string,
-    billingLastName: string,
-    billingCompany: string,
-    billingFirstAddress: string,
-    billingSecondAddress: string,
-    billingCity: string,
-    billingState: string,
-    billingZipcode: string,
-    billingCountry: string,
-    billingMobileNumber: string
+    registerData: RegisterData,
+    randomRegisterData: typeof randomData
   ) {
     await expect(this.fullnameBillingAddress).toBeVisible()
     const fullNameBilling = await this.fullnameBillingAddress.innerText()
     expect(fullNameBilling).toBe(
-      `${registerPage.selectedTitle}. ${billingFirstName} ${billingLastName}`
+      `${registerPage.selectedTitle}. ${randomRegisterData.randomFirstName} ${randomRegisterData.randomLastName}`
     )
 
     await expect(this.companyBillingAddress).toBeVisible()
     const companyBilling = await this.companyBillingAddress.innerText()
-    expect(companyBilling).toBe(billingCompany)
+    expect(companyBilling).toBe(randomRegisterData.randomCompany)
 
     await expect(this.firstDeliveryAddress).toBeVisible()
     const firstBilling = await this.firstBillingAddress.innerText()
-    expect(firstBilling).toBe(billingFirstAddress)
+    expect(firstBilling).toBe(randomRegisterData.randomFristAddress)
 
     await expect(this.secondBillingAddress).toBeVisible()
     const secondBilling = await this.secondBillingAddress.innerText()
-    expect(secondBilling).toBe(billingSecondAddress)
+    expect(secondBilling).toBe(randomRegisterData.randomSecondAddress)
 
     await expect(this.cityStateZipcodeBillingAddress).toBeVisible()
     const addressDetailsBilling =
       await this.cityStateZipcodeBillingAddress.innerText()
     expect(addressDetailsBilling).toBe(
-      `${billingCity} ${billingState} ${billingZipcode}`
+      `${randomRegisterData.randomCity} ${randomRegisterData.randomState} ${randomRegisterData.randomZipcode}`
     )
 
     await expect(this.countryBillingAddress).toBeVisible()
     const countryBilling = await this.countryBillingAddress.innerText()
-    expect(countryBilling).toBe(billingCountry)
+    expect(countryBilling).toBe(registerData.country)
 
     await expect(this.mobileBillingAddress).toBeVisible()
     const phoneBilling = await this.mobileBillingAddress.innerText()
-    expect(phoneBilling).toBe(billingMobileNumber)
+    expect(phoneBilling).toBe(randomRegisterData.randomMobileNumber)
   }
 
   async verifyProductsCheckout(productStore: ProductStore) {

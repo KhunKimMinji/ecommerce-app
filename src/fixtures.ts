@@ -80,7 +80,7 @@ export const test = base.extend<{
   loginData: async ({}, use) => {
     await use(loginData)
   },
-  registerFunction: async ({}, use ) => {
+  registerFunction: async ({}, use) => {
     await use(new RegisterFunction())
   },
   loginFunction: async ({}, use) => {

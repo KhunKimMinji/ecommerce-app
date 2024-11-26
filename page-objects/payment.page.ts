@@ -1,4 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test'
+import { random } from 'lodash'
+import { randomData } from '../test-data/randomData'
 
 export class Paymentpage {
   page: Page
@@ -19,18 +21,12 @@ export class Paymentpage {
     this.payButton = page.getByText('Pay and Confirm Order')
   }
 
-  async fillPaymentData(
-    namecard: string,
-    numberCard: string,
-    cvc: string,
-    expirationCard: string,
-    yearCard: number
-  ) {
-    await this.cardName.fill(namecard)
-    await this.cardNumber.fill(numberCard)
-    await this.cvc.fill(cvc)
-    await this.cardExpiration.fill(expirationCard)
-    await this.cardYear.fill(yearCard.toString())
+  async fillPaymentData(randomCardData: typeof randomData) {
+    await this.cardName.fill(randomCardData.randomCardName)
+    await this.cardNumber.fill(randomCardData.randomCardNumber)
+    await this.cvc.fill(randomCardData.radomCVC)
+    await this.cardExpiration.fill(randomCardData.randomCardExpiration)
+    await this.cardYear.fill(randomCardData.randomYearCard.toString())
   }
 
   async clickPayAndConfirmButton() {

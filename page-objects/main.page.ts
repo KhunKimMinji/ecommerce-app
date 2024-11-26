@@ -7,6 +7,9 @@ export class MainPage {
   loggedInAsUsername: Locator
   productsMenu: Locator
   cartMenu: Locator
+  deleteAccountMenu: Locator
+  deleteAccountMsg: Locator
+  continueButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -15,6 +18,9 @@ export class MainPage {
     this.loggedInAsUsername = page.getByText(' Logged in as ')
     this.productsMenu = page.locator('i.material-icons.card_travel')
     this.cartMenu = page.locator('ul.nav.navbar-nav i.fa-shopping-cart')
+    this.deleteAccountMenu = page.locator('ul.nav.navbar-nav i.fa-trash-o')
+    this.deleteAccountMsg = page.getByText('Account Deleted!')
+    this.continueButton = page.locator('//a[@class="btn btn-primary"]')
   }
 
   async verifyMainPageVisible() {
@@ -37,5 +43,17 @@ export class MainPage {
 
   async clickCartMenu() {
     await this.cartMenu.click()
+  }
+
+  async clickDeleteAccountMenu() {
+    await this.deleteAccountMenu.click()
+  }
+
+  async verifyDeleteAccountMsg() {
+    await expect(this.deleteAccountMsg).toBeVisible()
+  }
+
+  async clickContinueButton() {
+    await this.continueButton.click()
   }
 }

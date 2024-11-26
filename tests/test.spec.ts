@@ -10,7 +10,9 @@ test('Register User with existing email', async ({
   registerFunction,
   randomData,
   mainPage,
-  registerData
+  registerData,
+  loginFunction,
+  loginPage
 }) => {
   await mainPage.verifyMainPageVisible()
   await mainPage.clickSignupAndLoginButton()
@@ -28,46 +30,55 @@ test('Register User with existing email', async ({
   )
   await registerPage.clickSignupButton()
   await registerPage.verifyEmailAlreadyExistMessage()
+  await loginFunction.validLogin({ loginPage, randomData })
+  await mainPage.verifyLoginUsername(randomData.randomName)
+  await mainPage.clickDeleteAccountMenu()
+  await mainPage.verifyDeleteAccountMsg()
+  await mainPage.clickContinueButton()
+  await mainPage.verifyMainPageVisible()
 })
 
 test.describe('Login Flow', () => {
-  test('Login User with correct email and password', async ({
-    mainPage,
-    logoutPage,
-    loginPage,
-    registerFunction,
-    randomData,
-    registerPage,
-    registerData
-  }) => {
-    await mainPage.verifyMainPageVisible()
-    await mainPage.clickSignupAndLoginButton()
-    await registerFunction.validRegister({
+  test.beforeEach(
+    async ({
       mainPage,
+      registerFunction,
       registerPage,
-      randomData,
-      registerData
-    })
-    await logoutPage.clickLogoutButton()
-    await loginPage.verifyloginYourAccountMessage()
-    await loginPage.filllLoginData(
-      randomData.randomEmail,
-      randomData.randomPassword
-    )
-    await loginPage.clickLoginButton()
+      registerData,
+      logoutPage,
+      randomData
+    }) => {
+      await mainPage.verifyMainPageVisible()
+      await mainPage.clickSignupAndLoginButton()
+      await registerFunction.validRegister({
+        mainPage,
+        registerPage,
+        randomData,
+        registerData
+      })
+      await logoutPage.clickLogoutButton()
+    }
+  )
+  test.afterEach(async ({ mainPage, loginFunction, loginPage, randomData }) => {
+    await loginFunction.validLogin({ loginPage, randomData })
     await mainPage.verifyLoginUsername(randomData.randomName)
+    await mainPage.clickDeleteAccountMenu()
+    await mainPage.verifyDeleteAccountMsg()
+    await mainPage.clickContinueButton()
+    await mainPage.verifyMainPageVisible()
   })
 
   test('Login User with incorrect email', async ({
     loginPage,
     mainPage,
-    loginData
+    loginData,
+    randomData
   }) => {
     await mainPage.clickSignupAndLoginButton()
     await loginPage.verifyloginYourAccountMessage()
     await loginPage.filllLoginData(
       loginData.wrongEmail,
-      loginData.correctPassword
+      randomData.randomPassword
     )
     await loginPage.clickLoginButton()
     await loginPage.verifyLoginFailedMessage()
@@ -76,12 +87,13 @@ test.describe('Login Flow', () => {
   test('Login User with incorrect password', async ({
     loginPage,
     mainPage,
-    loginData
+    loginData,
+    randomData
   }) => {
     await mainPage.clickSignupAndLoginButton()
     await loginPage.verifyloginYourAccountMessage()
     await loginPage.filllLoginData(
-      loginData.correctEmail,
+      randomData.randomEmail,
       loginData.wrongPassword
     )
     await loginPage.clickLoginButton()
@@ -90,10 +102,12 @@ test.describe('Login Flow', () => {
 })
 
 test.describe('Verify Products Page', () => {
-  test.beforeEach(async ({ mainPage, loginFunction, loginPage, loginData }) => {
-    await mainPage.clickSignupAndLoginButton()
-    await loginFunction.validLogin({ loginPage, loginData })
-  })
+  test.beforeEach(
+    async ({ mainPage, loginFunction, loginPage, randomData }) => {
+      await mainPage.clickSignupAndLoginButton()
+      await loginFunction.validLogin({ loginPage, randomData })
+    }
+  )
   test('Verify All Products and product detail page', async ({
     mainPage,
     productsPage,
@@ -117,15 +131,49 @@ test.describe('Verify Products Page', () => {
 })
 
 test.describe('Order Product E2E Flow', () => {
+  test.afterEach(
+    async ({
+      cartPage,
+      checkoutPage,
+      paymentpage,
+      orderPlacedPage,
+      randomData,
+      registerData,
+      registerPage,
+      productStore,
+      mainPage
+    }) => {
+      await cartPage.verifyProductList(productStore)
+      await cartPage.clickCheckoutButton()
+      await checkoutPage.verfiyDeliveryAddress(
+        registerPage,
+        registerData,
+        randomData
+      )
+      await checkoutPage.verfiyBillingAddress(
+        registerPage,
+        registerData,
+        randomData
+      )
+      await checkoutPage.verifyProductsCheckout(productStore)
+      await checkoutPage.verifyTotalAmount(productStore)
+      await checkoutPage.clickPlaceOrderButton()
+      await paymentpage.fillPaymentData(randomData)
+      await paymentpage.clickPayAndConfirmButton()
+      await orderPlacedPage.verifyOrderPlacedMessage()
+      await orderPlacedPage.clickContinueButton()
+      await mainPage.verifyLoginUsername(randomData.randomName)
+      await mainPage.clickDeleteAccountMenu()
+      await mainPage.verifyDeleteAccountMsg()
+      await mainPage.clickContinueButton()
+      await mainPage.verifyMainPageVisible()
+    }
+  )
   test('Order product when the user is already logged in', async ({
     mainPage,
     registerPage,
     productsPage,
     productStore,
-    cartPage,
-    checkoutPage,
-    paymentpage,
-    orderPlacedPage,
     registerFunction,
     randomData,
     registerData
@@ -149,53 +197,6 @@ test.describe('Order Product E2E Flow', () => {
     await productsPage.productHover(0)
     await productsPage.clickAddToCartButton(0, productStore)
     await productsPage.clickViewCartButton()
-    await cartPage.verifyProductList(productStore)
-    await cartPage.clickCheckoutButton()
-    await checkoutPage.verfiyDeliveryAddress(
-      registerPage,
-      randomData.randomFirstName,
-      randomData.randomLastName,
-      randomData.randomCompany,
-      randomData.randomFristAddress,
-      randomData.randomSecondAddress,
-      randomData.randomCity,
-      randomData.randomState,
-      randomData.randomZipcode,
-      registerData.country,
-      randomData.randomMobileNumber
-    )
-    await checkoutPage.verfiyBillingAddress(
-      registerPage,
-      randomData.randomFirstName,
-      randomData.randomLastName,
-      randomData.randomCompany,
-      randomData.randomFristAddress,
-      randomData.randomSecondAddress,
-      randomData.randomCity,
-      randomData.randomState,
-      randomData.randomZipcode,
-      registerData.country,
-      randomData.randomMobileNumber
-    )
-    await checkoutPage.verifyProductsCheckout(productStore)
-    await checkoutPage.verifyTotalAmount(productStore)
-    await checkoutPage.clickPlaceOrderButton()
-    await paymentpage.fillPaymentData(
-      randomData.randomCardName,
-      randomData.randomCardNumber,
-      randomData.radomCVC,
-      randomData.randomCardExpiration,
-      randomData.randomYearCard
-    )
-    await paymentpage.clickPayAndConfirmButton()
-    await orderPlacedPage.verifyOrderPlacedMessage()
-    await orderPlacedPage.clickContinueButton()
-    await mainPage.verifyLoginUsername(randomData.randomName)
-    console.log(
-      'DONE Add product in Cart -> Store :',
-      productStore,
-      productStore.sum()
-    )
   })
 
   test('Order product before logging in', async ({
@@ -203,9 +204,10 @@ test.describe('Order Product E2E Flow', () => {
     productsPage,
     productStore,
     cartPage,
-    loginFunction,
-    loginPage,
-    loginData
+    registerFunction,
+    registerPage,
+    registerData,
+    randomData
   }) => {
     await mainPage.clickProductsMenu()
     await productsPage.scrollDoewn(0)
@@ -218,6 +220,18 @@ test.describe('Order Product E2E Flow', () => {
     await cartPage.verifyProductList(productStore)
     await cartPage.clickCheckoutButton()
     await cartPage.clickRegisterAndLoginButton()
-    await loginFunction.validLogin({ loginPage, loginData })
+    await registerFunction.validRegister({
+      mainPage,
+      registerPage,
+      randomData,
+      registerData
+    })
+    await mainPage.clickCartMenu()
+
+    console.log(
+      'DONE Add product in Cart -> Store :',
+      productStore,
+      productStore.sum()
+    )
   })
 })

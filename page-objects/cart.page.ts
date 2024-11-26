@@ -18,7 +18,9 @@ export class CartPage {
     this.quantityColumn = page.locator('td.cart_quantity button')
     this.totalColumn = page.locator('td.cart_total p')
     this.checkoutButton = page.getByText('Proceed To Checkout')
-    this.registerAndLoginButton = page.locator('//p[@class="text-center"]//u[text()="Register / Login"]')
+    this.registerAndLoginButton = page.locator(
+      '//p[@class="text-center"]//u[text()="Register / Login"]'
+    )
   }
 
   async verifyProductList(productStore: ProductStore) {
@@ -63,7 +65,7 @@ export class CartPage {
     await this.checkoutButton.click()
   }
 
-  async clickRegisterAndLoginButton(){
+  async clickRegisterAndLoginButton() {
     await this.registerAndLoginButton.click()
   }
 }

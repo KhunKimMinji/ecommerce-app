@@ -69,7 +69,6 @@ export class ProductsPage {
     await this.productName.nth(index).hover()
   }
 
-  // add first product to cart
   async clickAddToCartButton(index: number, productStore: ProductStore) {
     await this.addToCart.nth(index).click()
     const productName = await this.productName.nth(index).innerText()
