@@ -65,12 +65,13 @@ export const test = base.extend<{
     await use(randomData)
   },
   registerFunction: async ({ mainPage, registerPage, randomData }, use) => {
-    await use(() =>
-      registerFunction({
-        mainPage,
-        registerPage,
-        randomData
-      })
+    await use(
+      async () =>
+        await registerFunction({
+          mainPage,
+          registerPage,
+          randomData
+        })
     )
   }
 })
