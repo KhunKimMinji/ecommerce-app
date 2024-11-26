@@ -1,19 +1,21 @@
 import { MainPage } from '../../page-objects/main.page'
 import { RegisterPage } from '../../page-objects/register.page'
-import { randomData} from '../../test-data/randomData'
-import { registerData } from '../../test-data/testData'
+import { randomData } from '../../test-data/randomData'
+import { RegisterData } from '../../test-data/testData'
 
-export type RegisterFunctionProp = {
+type RegisterFunctionProp = {
   mainPage: MainPage
   registerPage: RegisterPage
   randomData: typeof randomData
+  registerData: RegisterData
 }
 
 export async function registerFunction({
   mainPage,
   registerPage,
-  randomData
-}: RegisterFunctionProp): Promise<void> {
+  randomData,
+  registerData
+}: RegisterFunctionProp) {
   await mainPage.verifyMainPageVisible()
   await mainPage.clickSignupAndLoginButton()
   await registerPage.verifyNewSignupMessage()

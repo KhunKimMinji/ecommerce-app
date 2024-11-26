@@ -14,7 +14,6 @@ export const randomData = {
   randomCity: faker.location.city(),
   randomZipcode: faker.location.zipCode(),
   randomMobileNumber: faker.phone.number(),
-
   randomCardName: faker.finance.accountName(),
   randomCardNumber: faker.finance.creditCardNumber(),
   radomCVC: faker.finance.creditCardCVV(),

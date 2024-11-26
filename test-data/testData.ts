@@ -1,10 +1,10 @@
-interface RegisterData {
+export interface RegisterData {
   days: string
   months: string
   years: string
   country: string
 }
-interface LoginData {
+export interface LoginData {
   correctEmail: string
   correctPassword: string
   wrongEmail: string

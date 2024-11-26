@@ -1,22 +1,10 @@
 import { test } from '../page-objects/fixtures'
 import { loginData, registerData } from '../test-data/testData'
-import { MainPage } from '../page-objects/main.page'
-import { LoginPage } from '../page-objects/login.page'
 import _ from 'lodash'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
-
-async function login(mainPage: MainPage, loginPage: LoginPage) {
-  await mainPage.clickSignupAndLoginButton()
-  await loginPage.verifyloginYourAccountMessage()
-  await loginPage.filllLoginData(
-    loginData.correctEmail,
-    loginData.correctPassword
-  )
-  await loginPage.clickLoginButton()
-}
 
 test('Register User with existing email', async ({
   registerPage,
@@ -81,8 +69,8 @@ test.describe('Login Flow', () => {
 })
 
 test.describe('Verify Products Page', () => {
-  test.beforeEach(async ({ mainPage, loginPage }) => {
-    await login(mainPage, loginPage)
+  test.beforeEach(async ({ loginFunction }) => {
+    await loginFunction()
   })
   test('Verify All Products and product detail page', async ({
     mainPage,
@@ -173,15 +161,12 @@ test.describe('Order Product E2E Flow', () => {
     await orderPlacedPage.verifyOrderPlacedMessage()
     await orderPlacedPage.clickContinueButton()
     await mainPage.verifyLoginUsername(randomData.randomName)
-
-    await console.log(
+    console.log(
       'DONE Add product in Cart -> Store :',
       productStore,
       productStore.sum()
     )
   })
 
-  test('Order product before logging in', async ({ productStore }) => {
-    // console.log("Add more products -> check product store :", productStore);
-  })
+  test('Order product before logging in', async ({ productStore }) => {})
 })

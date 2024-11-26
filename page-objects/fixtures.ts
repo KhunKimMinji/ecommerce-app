@@ -10,8 +10,15 @@ import { ProductStore } from '../src/store/product-store'
 import { CheckoutPage } from '../page-objects/checkout.page'
 import { Paymentpage } from './payment.page'
 import { OrderPlacedPage } from './orderPlaced.page'
-import {randomData} from '../test-data/randomData'
-import {registerFunction} from '../src/functions/register'
+import { randomData } from '../test-data/randomData'
+import { registerFunction } from '../src/functions/register'
+import { loginFunction } from '../src/functions/login'
+import {
+  loginData,
+  registerData,
+  RegisterData,
+  LoginData
+} from '../test-data/testData'
 
 export const test = base.extend<{
   mainPage: MainPage
@@ -26,7 +33,10 @@ export const test = base.extend<{
   paymentpage: Paymentpage
   orderPlacedPage: OrderPlacedPage
   randomData: typeof randomData
+  registerData: RegisterData
+  loginData: LoginData
   registerFunction: () => Promise<void>
+  loginFunction: () => Promise<void>
 }>({
   mainPage: async ({ page }, use) => {
     await use(new MainPage(page))
@@ -64,14 +74,26 @@ export const test = base.extend<{
   randomData: async ({}, use) => {
     await use(randomData)
   },
-  registerFunction: async ({ mainPage, registerPage, randomData }, use) => {
+  registerData: async ({}, use) => {
+    await use(registerData)
+  },
+  loginData: async ({}, use) => {
+    await use(loginData)
+  },
+  registerFunction: async ({ mainPage, registerPage, randomData, registerData }, use) => {
     await use(
       async () =>
         await registerFunction({
           mainPage,
           registerPage,
-          randomData
+          randomData,
+          registerData,
         })
     )
   },
+  loginFunction: async ({ mainPage, loginPage, loginData }, use) => {
+    await use(
+      async () => await loginFunction({ mainPage, loginPage, loginData })
+    )
+  }
 })
